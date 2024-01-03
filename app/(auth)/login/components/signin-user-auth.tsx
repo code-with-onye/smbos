@@ -6,9 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-
 import { cn } from "@/lib/utils";
-
 // import { Icons } from "@/components/icons"
 import {
   Form,
@@ -23,30 +21,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPasswordAuth } from "./user-password-auth";
-
-import { useRegisterStore } from "@/lib/store/register-store";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email" }),
-  businessName: z.string().optional(),
+  password: z.string().min(1, { message: "Please enter a password" }),
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [step, setStep] = React.useState<number>(0);
-  const { user, setUser } = useRegisterStore();
-
-
-  
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      businessName: "",
+      password: "",
     },
   });
 
@@ -55,19 +45,17 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     setTimeout(() => {
       setIsLoading(false);
-      setUser({ ...user, ...values });
-      setStep(1);
+      console.log(values);
     }, 3000);
   }
 
 
-
   return (
     <div className={cn("grid gap-6", className)} {...props}>
-      {step === 0 ? <Form {...form}>
+      <Form {...form}>
         {/* <form onSubmit={onSubmit}> */}
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid gap-3 ">
+          <div className="grid gap-3">
             <FormField
               control={form.control}
               name="email"
@@ -93,31 +81,25 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               )}
             />
 
-            {/* Business name */}
+            {/* Password */}
 
             <FormField
               control={form.control}
-              name="businessName"
+              name="password"
               render={({ field }) => (
                 <FormItem>
                   <FormControl >
                     <div className="grid gap-1">
-                      <Label className="sr-only" htmlFor="businessName">
+                      <Label className="sr-only" htmlFor="password">
                         Business Name
                       </Label>
-                      <div className="relative">
-                        <p className="text-sm text-muted-foreground absolute inset-y-2.5 mx-2">smbos.com/</p>
-                        <Input
-                          id="businessName"
-                          placeholder="business name"
-                          type="text"
-                          autoCapitalize="none"
-                          autoCorrect="off"
-                          disabled={isLoading}
-                          className="pl-[5.5rem]"
-                          {...field}
-                        />
-                      </div>
+                      <Input
+                        id="password"
+                        placeholder="Password"
+                        type="password"
+                        disabled={isLoading}
+                        {...field}
+                      />
                     </div>
                   </FormControl>
 
@@ -130,15 +112,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               {isLoading && (
                 <ImSpinner6 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Create Account
+              Login
             </Button>
           </div>
         </form>
-      </Form> :
-        <UserPasswordAuth />
-      }
+      </Form>
 
-      <div className={cn("relative", step !== 0 && "hidden")}>
+      <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
@@ -148,7 +128,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} className={cn("relative", step !== 0 && "hidden")}>
+      <Button variant="outline" type="button" disabled={isLoading}>
         {isLoading ? (
           <ImSpinner6 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
