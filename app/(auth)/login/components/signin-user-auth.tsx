@@ -5,55 +5,51 @@ import { ImGoogle, ImSpinner6 } from "react-icons/im";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import {signIn} from "next-auth/react"
 
 import { cn } from "@/lib/utils";
-// import { Icons } from "@/components/icons"
+import { LoginSchema } from "@/lib/schemas";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email" }),
-  password: z.string().min(1, { message: "Please enter a password" }),
-});
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof LoginSchema>) {
     setIsLoading(true);
 
     setTimeout(() => {
       setIsLoading(false);
+      signIn("credentials", values, {
+        redirect: DEFAULT_LOGIN_REDIRECT,
+      });
       console.log(values);
     }, 3000);
   }
 
-
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
-        {/* <form onSubmit={onSubmit}> */}
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-3">
             <FormField
@@ -61,8 +57,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl >
-                    <div className="grid gap-1" >
+                  <FormControl>
+                    <div className="grid gap-1">
                       <Input
                         id="email"
                         placeholder="jon@example.com"
@@ -88,7 +84,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl >
+                  <FormControl>
                     <div className="grid gap-1">
                       <Label className="sr-only" htmlFor="password">
                         Business Name
