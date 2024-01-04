@@ -47,6 +47,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }, 3000);
   }
 
+  const googleSignIn = async () => {
+    signIn("google", {
+      callbackUrl: DEFAULT_LOGIN_REDIRECT,
+    });
+  }
+
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <Form {...form}>
@@ -124,7 +130,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
+      <Button variant="outline" type="button" disabled={isLoading} onClick={
+googleSignIn
+      }>
         {isLoading ? (
           <ImSpinner6 className="mr-2 h-4 w-4 animate-spin" />
         ) : (

@@ -63,6 +63,7 @@ export const UserPasswordAuth = ({
                         router.push("/login");
                     },
                     onError: (error:any) => {
+                        console.log(error)
                         toast.error(error.response.data.message);
                     },
                 }

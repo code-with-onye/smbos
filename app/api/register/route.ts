@@ -20,11 +20,11 @@ export async function POST(req: Request) {
     const createUser = await prismadb.user.create({
       data: {
         email,
-        businessName,
         password: hashedPassword,
+        businessName
+        
       },
     });
-
     // TODO: Send verification email
 
     return NextResponse.json({
