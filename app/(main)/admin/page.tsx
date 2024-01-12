@@ -20,16 +20,13 @@ const AdminPage = async () => {
   const categories = await getCategoryByUserId(session?.user.id as string);
   const recentCreatedCategories = await getRecentCategoriesByUserId(
     session?.user.id as string
-  )
+  );
   const recentCreatedServices = await getRecentlyCreatedServicesByUserId(
     session?.user.id as string
   );
 
-  
-
   return (
     <div className="w-full px-4">
-
       <div className="w-full flex items-center">
         <div className="w-full min-h-[84vh] bg-white dark:bg-[#272E38] rounded-lg p-4 justify-center items-center">
           {/* side 1 */}
@@ -55,7 +52,18 @@ const AdminPage = async () => {
 
           {categories?.length !== 0 && (
             <div>
+
               {/* Service gose here */}
+
+              <div className="flex items-center w-full justify-between">
+                <h3 className="text-lg font-semibold">Recently Created Services</h3>
+                <CreateService
+                buttonType={<div className="w-full"> 
+                  <p className="text-xs font-semibold">Add New Service</p>
+                </div>}
+                categories={recentCreatedCategories as any}
+              />
+              </div>
               {recentCreatedServices?.length === 0 ? (
                 <div className="w-full rounded-2xl border dark:border-slate-800 bg-white dark:bg-black px-4 py-20 my-4 shadow-sm flex flex-col items-center gap-y-3">
                   <p className="text-sm ">
@@ -71,6 +79,8 @@ const AdminPage = async () => {
               ) : (
                 <CreatedService services={recentCreatedServices as any} />
               )}
+
+            
             </div>
           )}
         </div>
