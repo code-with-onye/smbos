@@ -2,6 +2,7 @@ import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { getUserByEmail } from "@/lib/server-actions/actions";
+import {signJwtAccessToken} from "@/lib/jwt";
 
 export async function POST(req: Request) {
   try {
@@ -13,6 +14,8 @@ export async function POST(req: Request) {
 
     const existingUser = await getUserByEmail(email);
 
+    const accessToken =  signJwtAccessToken({email, businessName, password: hashedPassword})
+
     if (existingUser) {
       return new NextResponse("Email already exists", { status: 400 });
     }
@@ -21,8 +24,8 @@ export async function POST(req: Request) {
       data: {
         email,
         password: hashedPassword,
-        businessName
-        
+        businessName,
+        accessToken
       },
     });
     // TODO: Send verification email

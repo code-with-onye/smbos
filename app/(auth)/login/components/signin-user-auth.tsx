@@ -5,7 +5,8 @@ import { ImGoogle, ImSpinner6 } from "react-icons/im";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import {signIn} from "next-auth/react"
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { LoginSchema } from "@/lib/schemas";
@@ -21,11 +22,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { AlertMessage } from "@/components/shared/alert-message";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const searchParams = useSearchParams();
+
+  const getUrlError =
+    searchParams.get("error") === "CredentialsSignin" &&
+    "Invalid email or password";
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -51,7 +58,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     signIn("google", {
       callbackUrl: DEFAULT_LOGIN_REDIRECT,
     });
-  }
+  };
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
@@ -109,6 +116,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 </FormItem>
               )}
             />
+            {getUrlError && (
+              <AlertMessage
+                title="Error"
+                description="Invalid email or password"
+              />
+            )}
 
             <Button disabled={isLoading}>
               {isLoading && (
@@ -130,9 +143,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={
-googleSignIn
-      }>
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isLoading}
+        onClick={googleSignIn}
+      >
         {isLoading ? (
           <ImSpinner6 className="mr-2 h-4 w-4 animate-spin" />
         ) : (

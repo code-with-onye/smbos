@@ -5,7 +5,7 @@
  */
 
 export const publicRoutes = [
-    "/", "/api/register",
+    "/", "/api/register", "/api/user", "/api/uploadthing",
 ]
 
 /**
@@ -16,7 +16,8 @@ export const publicRoutes = [
 
 export const authRoutes = [
     "/login",
-    "/signup"
+    "/signup",
+
 ]
 
 /**

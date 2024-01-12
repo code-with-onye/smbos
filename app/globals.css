@@ -50,6 +50,8 @@
   }
 }
 
+@import "~@uploadthing/react/styles.css";
+
 /*  
 @layer base {
   * {

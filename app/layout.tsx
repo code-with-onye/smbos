@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/lib/providers/theme-provider";
 import TanStackProvider from "@/lib/providers/tanstack-provider";
 import { Toaster } from 'react-hot-toast';
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" >
+      <body className={cn(inter.className, "bg-[#F3F3F1] dark:bg-black")}>
         <TanStackProvider>
           <ThemeProvider
             attribute="class"

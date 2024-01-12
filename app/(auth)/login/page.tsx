@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 };
 
 const SignUpPage = () => {
+     
+   
     return (
         <>
             <div className="">
@@ -73,7 +75,7 @@ const SignUpPage = () => {
                 <AuthSideBanner
                     text=" &ldquo;This library has saved me countless hours of work and
                         helped me deliver stunning designs to my clients faster than
-                        ever before.&rdquo;"
+                      ever before.&rdquo;"
                 />
             </div>
         </>
