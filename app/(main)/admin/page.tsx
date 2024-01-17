@@ -8,13 +8,17 @@ export default async function AdminPage() {
     const user = await currentUser()
     const orgs = await getOrgsByUserId(user?.id as string);
 
-    return <div>
-         {
+    return <div className="w-full h-screen flex items-center justify-center">
+                <div className=" p-8 rounded-lg shadow-md border bg-white w-[38%]">
+        {
             orgs?.map((org) => (
                 <Link key={org.id} href={`/admin/${org.id}`}>
+                    <div className="w-full p-3 rounded-md hover:bg-slate-50">
                     {org.name}
+                    </div>
                 </Link>
             ))
          }
+        </div>
     </div>;
 }
