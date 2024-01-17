@@ -2,14 +2,18 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 
+interface MainNavProps {
+  className?: string
+  display : "row" | "coloumn"
+}
+
 export function MainNav({
   className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) {
+   display,
+}: MainNavProps) {
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
-      {...props}
+      className={cn("flex", className, display === "coloumn" ? "flex-col gap-y-3" : "flex-row items-center space-x-4 lg:space-x-6")}
     >
       <Link
         href="/admin"
@@ -24,7 +28,7 @@ export function MainNav({
         Customers
       </Link>
       <Link
-        href="/admin/services"
+        href="/admin/service"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         Services

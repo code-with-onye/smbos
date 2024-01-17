@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetHeader,
@@ -25,6 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import React, { useState } from "react";
@@ -36,6 +38,7 @@ const formSchema = z.object({
     message: "Category is required",
   }),
   categoryImage: z.string().optional(),
+  categoryDescription: z.string().optional(),
   categoryDisplay: z.boolean().optional(),
 });
 
@@ -59,6 +62,7 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
     defaultValues: {
       categoryName: "",
       categoryImage: "",
+      categoryDescription:"",
       categoryDisplay: false,
     },
   });
@@ -114,7 +118,7 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
 
             {/* Image  */}
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="categoryImage"
               render={({ field }) => (
@@ -133,9 +137,9 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
                   </FormControl>
                 </FormItem>
               )}
-            />
+            /> */}
 
-           <div>
+           {/* <div>
              {image && (
                <div className="relative h-40 w-full rounded-lg ">
                  <Image
@@ -146,7 +150,28 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
                  />
                </div>
              )}
-           </div>
+           </div>  */}
+
+          {/* Description about category */}
+
+            <FormField
+              control={form.control}
+              name="categoryDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Description" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Description of the category. Example is SkinCare
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+
 
             <FormField
               control={form.control}
@@ -170,7 +195,12 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
                 </FormItem>
               )}
             />
+            <div className="flex justify-between items-center">
             <Button>Submit</Button>
+            <SheetClose>
+              <div>Close</div>
+            </SheetClose>
+            </div>
           </form>
         </Form>
       </SheetContent>

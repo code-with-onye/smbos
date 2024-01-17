@@ -1,0 +1,63 @@
+<div className="w-full flex items-center">
+        <div className="w-full min-h-[84vh] bg-white dark:bg-[#272E38] rounded-lg p-4 justify-center items-center">
+          {/* side 1 */}
+          <h3 className="text-3xl font-bold">Dashboard </h3>
+
+          <div>
+            {/* Categories gose here */}
+            {categories?.length === 0 ? (
+              <div className="w-full rounded-2xl border dark:border-slate-800 bg-white dark:bg-black px-4 py-20 my-4 shadow-sm flex flex-col items-center gap-y-3">
+                <p className="text-sm ">
+                  Start by Adding your first cartegory. Example is SkinCare{" "}
+                </p>
+                <CreateCategoryCard
+                  buttonType={
+                    <Button className="w-full"> Create Category</Button>
+                  }
+                />
+              </div>
+            ) : (
+              <CreatedCategory categories={recentCreatedCategories as any} />
+            )}
+          </div>
+
+          {categories?.length !== 0 && (
+            <div>
+
+              {/* Service gose here */}
+
+              <div className="flex items-center w-full justify-between my-4">
+                <h3 className="text-lg font-semibold">Recently Created Services</h3>
+                <CreateService
+                buttonType={<div className="w-full"> 
+                  <p className="text-xs font-semibold">Add New Service</p>
+                </div>}
+                categories={recentCreatedCategories as any}
+              />
+              </div>
+              {recentCreatedServices?.length === 0 ? (
+                <div className="w-full rounded-2xl border dark:border-slate-800 bg-white dark:bg-black px-4 py-20 my-4 shadow-sm flex flex-col items-center gap-y-3">
+                  <p className="text-sm">
+                    Start by creating your first service. Example is Hair Care
+                  </p>
+                  <CreateService
+                    buttonType={
+                      <Button className="w-full"> Create Service</Button>
+                    }
+                    categories={recentCreatedCategories as any}
+                  />
+                </div>
+              ) : (
+                <CreatedService services={recentCreatedServices as any} />
+              )}
+
+            
+            </div>
+          )}
+        </div>
+
+        <div className="w-full">
+          {/* side 2 */}
+          mobile view
+        </div>
+      </div>
