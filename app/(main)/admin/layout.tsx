@@ -26,7 +26,7 @@ export default async function AdminLayout({
           <h3 className="text-2xl font-bold">{`Let's set up your business account`}</h3>
           <p className="text-sm">Provide information about your organization or company </p>
         </div>
-        <div className=" p-8 rounded-lg shadow-md border bg-white w-[38%]">
+        <div className=" p-8 rounded-lg shadow-md border bg-white dark:bg-black dark:border-slate-900 w-[38%]">
           <OrganizationForm />
         </div>
         <form

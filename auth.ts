@@ -4,6 +4,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import prismadb from "./lib/prismadb"
 import {  getUserById } from "./lib/server-actions/actions"
 import { UserRole } from "@prisma/client"
+import { getOrgByUserId } from "./lib/server-actions/org"
 
 
 
@@ -38,11 +39,14 @@ export const {
         if(!token.sub) return token
 
         const existingUser = await getUserById(token.sub)
+        const existingOrg = await getOrgByUserId(token.sub)
 
         if(!existingUser) return token
         token.role = existingUser.role
         token.name = existingUser.name
         token.accessToken = existingUser.accessToken
+        token.orgnization = existingOrg?.id
+        
 
       
 
@@ -64,6 +68,10 @@ export const {
 
         if(token.accessToken && session.user) {
           session.user.accessToken = token.accessToken as string
+        }
+
+        if(token.orgnization && session.user) {
+          session.user.orgnization = token.orgnization as string
         }
         
       

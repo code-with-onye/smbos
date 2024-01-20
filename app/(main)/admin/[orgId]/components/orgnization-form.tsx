@@ -80,7 +80,6 @@ export const OrganizationForm = () => {
         toast.error(error.response.data);
       },
     });
-    console.log(values);
   }
 
   return (

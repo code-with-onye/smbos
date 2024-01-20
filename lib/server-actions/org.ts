@@ -1,5 +1,19 @@
 import prismadb from "../prismadb";
 
+export const getOrgByUserId = async (id: string) => {
+    try {
+        const orgs = await prismadb.orgnization.findFirst({
+            where: {
+                userId: id
+            }
+        });
+        return orgs;
+    } catch (error) {
+        console.log("[Org_Get]", error);
+        return null
+    }
+}
+
 export const getOrgsByUserId = async (id: string) => {
     try {
         const orgs = await prismadb.orgnization.findMany({
@@ -13,6 +27,7 @@ export const getOrgsByUserId = async (id: string) => {
         return null
     }
 }
+
 
 
 export const getOrgs = async () => {

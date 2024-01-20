@@ -71,6 +71,8 @@ model Orgnization {
 model Store {
   id         String     @id @default(cuid())
   name       String
+  whatsappNumber String
+  storeImage String?
   categories Category[]
   services   Service[]
   userId     String

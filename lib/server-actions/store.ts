@@ -24,3 +24,17 @@ export const getStoresByOgnId = async (id: string) => {
         return null
     }
 }
+
+export const getStoreByUserId = async(id: string) => {
+    try {
+        const store = await prismadb.store.findFirst({
+            where: {
+                userId: id,
+            }
+        });
+        return store;
+    } catch (error) {
+        console.log("[Store_Get]", error);
+        return null
+    }
+}
