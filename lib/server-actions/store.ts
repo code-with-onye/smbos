@@ -11,6 +11,20 @@ export const getStores = async () => {
     }
 }
 
+export const getCurrentStore = async (id: string) => {
+    try {
+        const store = await prismadb.store.findUnique({
+            where: {
+                id
+            }
+        });
+        return store;
+    } catch (error) {
+        console.log("[Store_Get]", error);
+        return null
+    }
+}
+
 export const getStoresByOgnId = async (id: string) => {
     try {
         const stores = await prismadb.store.findMany({

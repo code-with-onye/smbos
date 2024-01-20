@@ -40,6 +40,8 @@ export const {
 
         const existingUser = await getUserById(token.sub)
         const existingOrg = await getOrgByUserId(token.sub)
+        
+
 
         if(!existingUser) return token
         token.role = existingUser.role

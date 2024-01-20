@@ -1,6 +1,9 @@
 
 import type { Metadata } from "next";
+import { orgnizationId } from "@/lib/auth";
+
 import { Sidebar } from "@/app/(main)/admin/[orgId]/components/sidebar";
+import { getStoresByOgnId } from "@/lib/server-actions/store";
 
 
 export const metadata: Metadata = {
@@ -9,9 +12,20 @@ export const metadata: Metadata = {
   };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+
+    const orgId = await orgnizationId();
+    const stores  = await getStoresByOgnId(orgId as string);
+    const getStoreNamesAndImages = stores?.map((store) => {
+        return {
+            storeName: store.name,
+            storeImage: store.storeImage,
+            storeId: store.id
+        }
+    })
+    
     return (
         <main className="w-full flex ">
-            <Sidebar/>
+            <Sidebar  store={getStoreNamesAndImages}/>
             {children}
         </main>
     )

@@ -52,7 +52,6 @@ export const StoreForm = () => {
     createStore(values, {
       onSuccess: (data) => {
         form.reset();
-        // console.log(data);
         toast.success("Store created");
         setIsLoading(false);
         router.push(`/admin/${data.data.store.id}/service`);
@@ -120,7 +119,6 @@ export const StoreForm = () => {
                 </div>
               </div>
             </FormControl>
-
             <FormMessage />
           </FormItem>
           )}
