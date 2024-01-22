@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { orgnizationId } from "@/lib/auth";
 
 import { Sidebar } from "@/app/(main)/admin/[orgId]/components/sidebar";
-import { getStoresByOgnId } from "@/lib/server-actions/store";
+import {  getCurrentStoreByOgnId, getStoresByOgnId } from "@/lib/server-actions/store";
 
 
 export const metadata: Metadata = {
@@ -15,6 +15,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
     const orgId = await orgnizationId();
     const stores  = await getStoresByOgnId(orgId as string);
+    const currentStore = await getCurrentStoreByOgnId(orgId as string);
+
     const getStoreNamesAndImages = stores?.map((store) => {
         return {
             storeName: store.name,
@@ -25,7 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     
     return (
         <main className="w-full flex ">
-            <Sidebar  store={getStoreNamesAndImages}/>
+            <Sidebar  store={getStoreNamesAndImages}  currentStoreId={currentStore?.id as string}/>
             {children}
         </main>
     )

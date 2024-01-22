@@ -11,19 +11,7 @@ export const getStores = async () => {
     }
 }
 
-export const getCurrentStore = async (id: string) => {
-    try {
-        const store = await prismadb.store.findUnique({
-            where: {
-                id
-            }
-        });
-        return store;
-    } catch (error) {
-        console.log("[Store_Get]", error);
-        return null
-    }
-}
+
 
 export const getStoresByOgnId = async (id: string) => {
     try {
@@ -39,6 +27,19 @@ export const getStoresByOgnId = async (id: string) => {
     }
 }
 
+export const getCurrentStoreByOgnId = async (id: string) => {
+    try {
+        const store = await prismadb.store.findFirst({
+            where: {
+                orgId: id
+            }
+        });
+        return store;
+    } catch (error) {
+        console.log("[Store_Get]", error);
+        return null
+    }
+}
 export const getStoreByUserId = async(id: string) => {
     try {
         const store = await prismadb.store.findFirst({

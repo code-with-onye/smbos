@@ -1,7 +1,10 @@
 import { signOut } from "@/auth";
 import { Button } from "@/components/ui/button";
 
+
 const OrganizationPage =  () => {
+
+  
   
   return (
     <div className="w-full px-4">

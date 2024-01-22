@@ -32,6 +32,7 @@ import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { FileUpload } from "@/components/shared/file-upload";
 import Image from "next/image";
+import useLocalStorage from "@/lib/hooks/use-localstorage";
 
 const formSchema = z.object({
   categoryName: z.string().min(1, {
@@ -40,15 +41,20 @@ const formSchema = z.object({
   categoryImage: z.string().optional(),
   categoryDescription: z.string().optional(),
   categoryDisplay: z.boolean().optional(),
+  currentStoreId: z.string().optional(),
 });
 
 interface Category {
   buttonType: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 }
 
-export const CreateCategoryCard = ({ buttonType }: Category) => {
+export const CreateCategoryCard = ({ buttonType, className, onClick }: Category) => {
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
+  const [state, setState] = useLocalStorage("currentStoreId", "")
+
   const router = useRouter();
   const { mutate: createCategory } = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => {
@@ -69,7 +75,7 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setisLoading(true);
-    createCategory(values, {
+    createCategory({ ...values, currentStoreId: state}, {
       onSuccess: (data) => {
         form.reset();
         toast.success("Category created");
@@ -86,8 +92,8 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
 
   return (
     <Sheet>
-      <SheetTrigger>{buttonType}</SheetTrigger>
-      <SheetContent side="left">
+      <SheetTrigger className={className} onClick={onClick}>{buttonType}</SheetTrigger>
+      <SheetContent side="left" className="w-[600px]">
         <SheetHeader>
           <SheetTitle>Add a new category </SheetTitle>
           <SheetDescription>
@@ -116,43 +122,7 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
               )}
             />
 
-            {/* Image  */}
-
-            {/* <FormField
-              control={form.control}
-              name="categoryImage"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-primary p-4">
-                  <FormControl>
-                    <FileUpload
-                      onUpload={(url) => {
-                        if (url) {
-                          field.onChange(url);
-                          setImage(url);
-                        }
-                      }}
-                      endpoint="categoryImage"
-                      
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
-
-           {/* <div>
-             {image && (
-               <div className="relative h-40 w-full rounded-lg ">
-                 <Image
-                   src={image}
-                   alt="category image"
-                   fill
-                   className="object-cover absolute overflow-hidden rounded-lg"
-                 />
-               </div>
-             )}
-           </div>  */}
-
-          {/* Description about category */}
+            
 
             <FormField
               control={form.control}
@@ -183,7 +153,7 @@ export const CreateCategoryCard = ({ buttonType }: Category) => {
                       Display category Public
                     </FormLabel>
                     <FormDescription>
-                      Activating this will make the category public
+                      This category will be displayed on your store
                     </FormDescription>
                   </div>
                   <FormControl>

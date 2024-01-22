@@ -14,6 +14,8 @@ export const getOrgByUserId = async (id: string) => {
     }
 }
 
+
+
 export const getOrgsByUserId = async (id: string) => {
     try {
         const orgs = await prismadb.orgnization.findMany({

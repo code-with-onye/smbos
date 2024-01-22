@@ -12,11 +12,13 @@ export default async function AdminPage() {
     const orgs = await getOrgsByUserId(user?.id as string);
     const stores = await getStoresByOgnId(orgId as string);
 
+    console.log("orgId:", orgId)
+
     return <div className="w-full h-screen flex items-center justify-center">
                 <div className=" p-8 rounded-lg shadow-md border bg-white dark:bg-black  w-[38%]">
         {
             orgs?.map((org) => (
-                <Link key={org.id} href={`/admin/${org.id}`}>
+                <Link key={org.id} href={`/admin/${org.name}`}>
                     <div className="w-full p-3 rounded-md hover:bg-slate-50 dark:hover:bg-slate-950">
                     {org.name}
                     </div>

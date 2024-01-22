@@ -61,3 +61,39 @@
           mobile view
         </div>
       </div>
+
+
+
+     <!-- <FormField
+                control={form.control}
+                name="serviceImage"
+                render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-primary p-4">
+                        <FormControl>
+                            <FileUpload
+                                onUpload={(url) => {
+                                    if (url) {
+                                        field.onChange(url);
+                                        setImage(url);
+                                    }
+                                }}
+                                endpoint="serviceImage"
+
+                            />
+                        </FormControl>
+                    </FormItem>
+                )}
+            /> */}
+     
+            <div>
+                {image && (
+                    <div className="relative h-40 w-full rounded-lg ">
+                        <Image
+                            src={image}
+                            alt="category image"
+                            fill
+                            className="object-cover absolute overflow-hidden rounded-lg"
+                        />
+                    </div>
+                )}
+            </div>  -->

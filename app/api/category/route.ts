@@ -8,17 +8,25 @@ export async function POST(req: Request) {
 
     const user = await currentUser();
     
-    const { categoryName, categoryImage, categoryDisplay } = body;
+    const { categoryName, categoryImage, categoryDisplay, currentStoreId } = body;
+
+    if (!user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
     if (!categoryName) {
       return new NextResponse("Missing category name", { status: 401 });
+    }
+
+    if (!currentStoreId) {
+      return new NextResponse("Missing store id", { status: 401 });
     }
 
     // check if category already exists and user is the owner
     const existingCategory = await prismadb.category.findFirst({
       where: {
         name: categoryName,
-        userId: user?.id as string,
+        storeId: currentStoreId as string,
       },
     });
 
@@ -31,6 +39,7 @@ export async function POST(req: Request) {
         name: categoryName,
         image: categoryImage,
         displayCategory: categoryDisplay,
+        storeId: currentStoreId as string,
         userId: user?.id as string,
       },
     });

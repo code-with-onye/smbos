@@ -1,6 +1,6 @@
 
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -18,24 +18,33 @@ import {
 } from "@/components/ui/popover"
 import { CaretSortIcon, CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
-import { DialogTrigger } from "@radix-ui/react-dialog"
-import Link from "next/link"
+import { useStores } from "@/lib/store/stores";
+import useLocalStorage from "@/lib/hooks/use-localstorage"
+
 
   type SidebarProps =  {
     store: {
       storeId: string
       storeName: string
       storeImage: string | null
-    }[] | undefined
+    }[] | undefined,
+    currentStoreId: string
  }
 
    
-export const StorSwitcher = ({store}: SidebarProps) => {
+export const StorSwitcher = ({store, currentStoreId}: SidebarProps) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
+    const { storeId, setStoreId} = useStores()
+    const [state, setState] = useLocalStorage("currentStoreId", currentStoreId)
 
-    console.log(value)
+    // useEffect for setting the current store if there is updated
+    useEffect(() => {
+      setStoreId(currentStoreId)
+    }, [currentStoreId])
+
     const [showNewTeamDialog, setShowNewTeamDialog] = useState(false)
+    
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -45,6 +54,7 @@ export const StorSwitcher = ({store}: SidebarProps) => {
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
+      
 
         >
           {value
@@ -65,6 +75,8 @@ export const StorSwitcher = ({store}: SidebarProps) => {
                  key={stores.storeName}
                  onSelect={() => {
                    setValue(stores.storeName)
+                   setStoreId(stores.storeId)
+                   setState(stores.storeId)
                    setOpen(false)
                  }}
                >
