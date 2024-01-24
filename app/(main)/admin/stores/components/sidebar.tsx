@@ -1,5 +1,5 @@
 import React from 'react'
-import {MainNav} from "@/app/(main)/admin/[orgId]/components/admin-nav";
+import {MainNav} from "@/app/(main)/admin/stores/components/admin-nav";
 import Image from 'next/image';
 import { StorSwitcher } from '@/components/shared/store-switcher';
 

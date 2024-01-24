@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import prismadb from "@/lib/prismadb";
 import { currentUser } from "@/lib/auth";
-import { orgnizationId } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +9,6 @@ export async function POST(req: Request) {
     const { storeName, whatsappNumber, storeImage } = body;
 
     const user = await currentUser();
-    const orgId = await orgnizationId();
 
 
     if (!user) {
@@ -30,15 +28,18 @@ export async function POST(req: Request) {
       where: {
         name: storeName,
         userId: user?.id as string,
-        orgId: "",
+
       },
     });
+
+    if (existingStore) {
+      return new NextResponse("Store already exists", { status: 401 });
+    }
 
     const store = await prismadb.store.create({
       data: {
         name: storeName,
         userId: user?.id as string,
-        orgId: orgId as string,
         whatsappNumber: whatsappNumber,
       },
     });

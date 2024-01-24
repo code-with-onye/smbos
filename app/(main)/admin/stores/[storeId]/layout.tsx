@@ -1,9 +1,9 @@
 
 import type { Metadata } from "next";
-import { orgnizationId } from "@/lib/auth";
+import { currentUser } from "@/lib/auth";
 
-import { Sidebar } from "@/app/(main)/admin/[orgId]/components/sidebar";
-import {  getCurrentStoreByOgnId, getStoresByOgnId } from "@/lib/server-actions/store";
+import { Sidebar } from "../components/sidebar";
+import { getCurrntStoreByUserId, getStoresByUserId } from "@/lib/server-actions/store";
 
 
 export const metadata: Metadata = {
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
     description: "Start creating your service",
   };
 
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function StoreLayout({ children }: { children: React.ReactNode }) {
 
-    const orgId = await orgnizationId();
-    const stores  = await getStoresByOgnId(orgId as string);
-    const currentStore = await getCurrentStoreByOgnId(orgId as string);
+    const user = await currentUser()
+    const currentStore = await getCurrntStoreByUserId(user?.id as string);
+    const stores= await getStoresByUserId(user?.id as string);
 
     const getStoreNamesAndImages = stores?.map((store) => {
         return {
@@ -24,6 +24,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             storeId: store.id
         }
     })
+  
     
     return (
         <main className="w-full flex ">

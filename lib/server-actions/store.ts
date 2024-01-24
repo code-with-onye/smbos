@@ -11,13 +11,28 @@ export const getStores = async () => {
     }
 }
 
+export const getCurrntStoreByUserId = async (id: string) => {
+    
+    try {
+        const store = await prismadb.store.findFirst({
+            where: {
+                userId: id
+            }
+        });
+        return store;
+    } catch (error) {
+        console.log("[Store_Get]", error);
+        return null
+    }
+}
 
 
-export const getStoresByOgnId = async (id: string) => {
+
+export const getStoresByUserId = async (id: string) => {
     try {
         const stores = await prismadb.store.findMany({
             where: {
-                orgId: id
+                userId: id
             }
         });
         return stores;
@@ -27,29 +42,3 @@ export const getStoresByOgnId = async (id: string) => {
     }
 }
 
-export const getCurrentStoreByOgnId = async (id: string) => {
-    try {
-        const store = await prismadb.store.findFirst({
-            where: {
-                orgId: id
-            }
-        });
-        return store;
-    } catch (error) {
-        console.log("[Store_Get]", error);
-        return null
-    }
-}
-export const getStoreByUserId = async(id: string) => {
-    try {
-        const store = await prismadb.store.findFirst({
-            where: {
-                userId: id,
-            }
-        });
-        return store;
-    } catch (error) {
-        console.log("[Store_Get]", error);
-        return null
-    }
-}

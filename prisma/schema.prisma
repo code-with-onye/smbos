@@ -30,7 +30,7 @@ model User {
   profile       Profile?
   organizations Orgnization[]
   Account       Account[]
-  categories    Category[]
+  store         Store[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,13 +56,11 @@ model Account {
 }
 
 model Orgnization {
-  id              String @id @default(cuid())
+  id              String  @id @default(cuid())
   name            String
   serviceType     String
   orgnizationSize String?
   userId          String
-
-  store Store[]
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt DateTime @default(now())
@@ -70,18 +68,15 @@ model Orgnization {
 }
 
 model Store {
-  id         String     @id @default(cuid())
-  name       String
+  id             String     @id @default(cuid())
+  name           String
   whatsappNumber String
-  storeImage String?
-  categories Category[]
-  services   Service[]
-  userId     String
-  orgId      String
-  ognizationName String
+  storeImage     String?
+  categories     Category[]
+  services       Service[]
+  userId         String
 
-  org Orgnization @relation(fields: [orgId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  // orgName Orgnization @relation(fields: [ognizationName], references: [name], onDelete: Cascade, onUpdate: Cascade), 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,7 +92,6 @@ model Category {
   userId          String
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -54,7 +54,8 @@ export const StoreForm = () => {
         form.reset();
         toast.success("Store created");
         setIsLoading(false);
-        router.push(`/admin/${data.data.store.id}/service`);
+        router.push(`/admin/stores/${data.data.store.id}/service`);
+        router.refresh();
       },
       onError: (error: any) => {
         console.log(error);

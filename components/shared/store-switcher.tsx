@@ -20,7 +20,7 @@ import { CaretSortIcon, CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons
 import { cn } from "@/lib/utils"
 import { useStores } from "@/lib/store/stores";
 import useLocalStorage from "@/lib/hooks/use-localstorage"
-
+import { useRouter, useParams } from "next/navigation"
 
   type SidebarProps =  {
     store: {
@@ -35,13 +35,18 @@ import useLocalStorage from "@/lib/hooks/use-localstorage"
 export const StorSwitcher = ({store, currentStoreId}: SidebarProps) => {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState("")
-    const { storeId, setStoreId} = useStores()
+    const router = useRouter()
+    const { storeId } = useParams()
+
+
+    // const { storeId, setStoreId} = useStores()
     const [state, setState] = useLocalStorage("currentStoreId", currentStoreId)
 
+
     // useEffect for setting the current store if there is updated
-    useEffect(() => {
-      setStoreId(currentStoreId)
-    }, [currentStoreId])
+    // useEffect(() => {
+    //   setStoreId(currentStoreId)
+    // }, [currentStoreId])
 
     const [showNewTeamDialog, setShowNewTeamDialog] = useState(false)
     
@@ -54,11 +59,10 @@ export const StorSwitcher = ({store, currentStoreId}: SidebarProps) => {
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
-      
 
         >
           {value
-            ? store?.find((stores) => stores.storeName === value)?.storeName
+            ? store?.find((stores) => stores.storeId === storeId)?.storeName
             : "Select Store..."}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -75,8 +79,9 @@ export const StorSwitcher = ({store, currentStoreId}: SidebarProps) => {
                  key={stores.storeName}
                  onSelect={() => {
                    setValue(stores.storeName)
-                   setStoreId(stores.storeId)
+                  //  setStoreId(stores.storeId)
                    setState(stores.storeId)
+                   router.push(`/admin/stores/${stores.storeId}/service`);
                    setOpen(false)
                  }}
                >
