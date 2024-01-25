@@ -10,6 +10,25 @@ export const getCategories = async () => {
    }
 }
 
+export const getCategoriesByStoreId = async (id: string) => {
+
+   try {
+      const categories = await prismadb.category.findMany({
+         where: {
+            storeId: id
+
+         },
+         include: {
+            services: true
+         }
+      });
+      return categories;
+   } catch (error) {
+      console.log("[Category_Get]", error);
+      return null
+   }
+}
+
 export const getCategoryByUserId = async (id: string) => {
 
    try {

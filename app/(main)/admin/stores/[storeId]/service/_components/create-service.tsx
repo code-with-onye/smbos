@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 import axios from "@/lib/axios";
 import { Button } from "@/components/ui/button";
@@ -41,29 +41,34 @@ import { Switch } from "@/components/ui/switch";
 import { FileUpload } from "@/components/shared/file-upload";
 import Image from "next/image";
 
+const durations = ["5min", "10min", "15min", "20min"];
+
 const formSchema = z.object({
   categoryId: z.string({
     required_error: "Choose a category",
   }),
+  storeId: z.string(),
   serviceName: z.string().min(3, {
     message: "Category is required",
   }),
   serviceDescription: z
-    .string()
-    .min(10, {
-      message: "Description must be at least 10 characters.",
-    })
-    .max(160, {
-      message: "Description must not be longer than 30 characters.",
-    }),
-  serviceImage: z.string({
-    required_error: "Image is required",
-    invalid_type_error: "Image must be a string",
-  }),
+    .string().optional(),
+  // serviceImage: z.string({
+  //   required_error: "Image is required",
+  //   invalid_type_error: "Image must be a string",
+  // }),
 
   servicePrice: z.string({
     required_error: "Price is required",
   }),
+  serviceDuration: z.string({
+    required_error: "Duration is required",
+  }),
+
+  servicePriceType: z.string({
+    required_error: "Price type is required",
+  }),
+
   serviceFeatured: z.boolean().optional(),
   serviceAvailable: z.boolean().optional(),
 });
@@ -76,9 +81,7 @@ interface Service {
   categories: {
     id: string;
     name: string;
-    image: string;
-    displayCategory: boolean;
-  }[];
+  }[] | undefined;
 }
 
 export const CreateService = ({
@@ -89,7 +92,8 @@ export const CreateService = ({
 }: Service) => {
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const router = useRouter();
+  const { storeId } = useParams()
+
 
   const { mutate: createService } = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => {
@@ -101,11 +105,13 @@ export const CreateService = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: "" || categories[0]?.id,
+      categoryId: "" || categories?.[0]?.id,
       serviceName: "",
+      storeId:  storeId as string,
       serviceDescription: "",
-      serviceImage: "",
       servicePrice: "",
+      serviceDuration: "",
+      servicePriceType: "",
       serviceFeatured: false,
       serviceAvailable: false,
     },
@@ -113,6 +119,8 @@ export const CreateService = ({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setisLoading(true);
+
+    console.log(values)
     createService(values, {
       onSuccess: (data) => {
         form.reset();
@@ -145,8 +153,6 @@ export const CreateService = ({
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-8 mt-12"
             >
-              
-
               <div className="w-full border-2 border-gray-900 shadow rounded-md p-4">
                 <div className="border-b pb-4">
                   <h3 className="text-lg font-semibold">Basic Info</h3>
@@ -171,8 +177,8 @@ export const CreateService = ({
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem
+                            {categories?.map((category) => (
+                              <SelectItem 
                                 key={category.id}
                                 value={category.id}
                                 className=" capitalize"
@@ -212,7 +218,7 @@ export const CreateService = ({
                     name="serviceDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Bio</FormLabel>
+                        <FormLabel>Description</FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder={`Talk a little bit about your service`}
@@ -237,21 +243,57 @@ export const CreateService = ({
                 </div>
                 <div className="w-full mt-4 boder bg-[#F5F5F5] p-3 rounded-md">
                   <h3 className="text-lg font-semibold">Pricing Option 1</h3>
-                  <div className="flex items-center gap-x-3">
+                  <div className="flex flex-row w-full   gap-x-4">
                     <FormField
                       control={form.control}
-                      name="servicePrice"
+                      name="serviceDuration"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Service Price</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Price"
-                              {...field}
-                              className="bg-white"
-                            />
-                          </FormControl>
-
+                        <FormItem className="w-full">
+                          <FormLabel> Duration</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl className="bg-white">
+                              <SelectTrigger>
+                                <SelectValue className=" capitalize" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {/* time  */}
+                              {durations.map((duration, i) => (
+                                <SelectItem key={i} value={duration}>
+                                  {" "}
+                                  {duration}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="servicePriceType"
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel> Price type</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl className="w-full bg-white">
+                              <SelectTrigger>
+                                <SelectValue className=" capitalize" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="free">Free</SelectItem>
+                              <SelectItem value="from">From</SelectItem>
+                              <SelectItem value="fixed">Fixed</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -260,25 +302,7 @@ export const CreateService = ({
                       control={form.control}
                       name="servicePrice"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Service Price</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Price"
-                              {...field}
-                              className="bg-white"
-                            />
-                          </FormControl>
-
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="servicePrice"
-                      render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="w-full">
                           <FormLabel>Service Price</FormLabel>
                           <FormControl>
                             <Input
@@ -294,9 +318,14 @@ export const CreateService = ({
                     />
                   </div>
                 </div>
-                <div className=" w-full bg-primary cursor-pointer text-primary-foreground p-3 rounded-md grid place-items-center" onClick={() => {
-                  console.log(form.getValues());
-                }}>Add Pricing Option</div>
+                <div
+                  className=" w-full bg-primary cursor-pointer text-primary-foreground p-3 rounded-md grid place-items-center"
+                  onClick={() => {
+                    console.log("add pricing option");
+                  }}
+                >
+                  Add Pricing Option
+                </div>
               </div>
 
               <div className="w-full border-2 border-gray-900 shadow rounded-md p-4">
@@ -332,8 +361,6 @@ export const CreateService = ({
                 <Button>Submit</Button>
                 <SheetClose>Cancel</SheetClose>
               </div>
-
-             
             </form>
           </Form>
         </div>

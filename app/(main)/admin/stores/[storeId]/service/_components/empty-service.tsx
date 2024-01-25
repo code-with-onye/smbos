@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import { RiUDiskLine } from "react-icons/ri";
 
 import { ServiceButton } from "./service-button";
-export const EmptyService = () => {
+import { CategoriesNamesAndIdProps } from "@/lib/types";
+
+
+
+export const EmptyService = ({ categories }: CategoriesNamesAndIdProps) => {
   return (
     <div className="w-full border-2 shadow-xl rounded-md h-[88vh] flex flex-col items-center justify-center bg-white">
       <div className="flex flex-col items-center justify-center gap-y-3">
@@ -11,7 +15,7 @@ export const EmptyService = () => {
           <p>No service created yet!</p>
         </div>
 
-        <ServiceButton />
+        <ServiceButton categories={categories}/>
       </div>
     </div>
   );

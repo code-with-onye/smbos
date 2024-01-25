@@ -18,13 +18,13 @@ export function MainNav({
 
   const router = useRouter()
   const pathname = usePathname()
-  const { orgId } = useParams()
+  const { storeId } = useParams()
 
   const navItems = [
-    { name: "Home", href: `/admin/${orgId}/`, icon: IoIosHome },
-    { name: "Users", href: `/admin/${orgId}/users`, icon: IoIosPeople },
-    { name: "Service", href: `/admin/${orgId}/service`, icon: IoIosApps },
-    { name: "Settings", href: `/admin/${orgId}/settings`, icon: IoIosSettings },
+    { name: "Home", href: `/admin/stores/${storeId}/`, icon: IoIosHome },
+    { name: "Users", href: `/admin/stores/${storeId}/users`, icon: IoIosPeople },
+    { name: "Service", href: `/admin/stores/${storeId}/service`, icon: IoIosApps },
+    { name: "Settings", href: `/admin/stores/${storeId}/settings`, icon: IoIosSettings },
   ]
   
   return (

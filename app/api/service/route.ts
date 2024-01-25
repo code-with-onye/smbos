@@ -9,11 +9,13 @@ export async function POST(req: Request) {
     const {
       serviceName,
       serviceDescription,
-      serviceImage,
+      serviceDuration,
+      servicePriceType,
       servicePrice,
       serviceFeatured,
       serviceAvailable,
       categoryId,
+      storeId,
     } = body;
 
     const user = await currentUser();
@@ -37,16 +39,25 @@ export async function POST(req: Request) {
       return new NextResponse("Missing price", { status: 401 });
     }
 
+    if(!categoryId) {
+      return new NextResponse("Missing category", { status: 401 });
+    }
+
+    if(!storeId) {
+      return new NextResponse("Missing store", { status: 401 });
+    }
+
     const service = await prismadb.service.create({
       data: {
         name: serviceName,
         description: serviceDescription,
-        image: serviceImage,
         price: servicePrice,
         featured: serviceFeatured,
         availability: serviceAvailable,
-        userId: user.id as string,
+        storeId: storeId,
         categoryId: categoryId,
+        priceType: servicePriceType,
+        duration: serviceDuration
       },
     });
 

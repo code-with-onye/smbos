@@ -9,9 +9,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CreateCategoryCard } from "../../../components/create-category-card";
-import { CreateService } from "../../../components/create-service";
+import { CreateService } from "./create-service";
+import { CategoriesNamesAndIdProps } from "@/lib/types";
 
-export const ServiceButton = () => {
+export const ServiceButton = ( { categories }: CategoriesNamesAndIdProps) => {
+  console.log(categories)
   const [active, setActive] = useState("");
   return (
     <Popover>
@@ -30,7 +32,7 @@ export const ServiceButton = () => {
         />
         <CreateService
           buttonType="New Service"
-          categories={[]}
+          categories={categories}
           className={cn(
             active === "service"
               ? "bg-primary text-primary-foreground p-3 rounded-lg"
