@@ -50,7 +50,7 @@ interface Category {
   onClick?: () => void;
 }
 
-export const CreateCategoryCard = ({ buttonType, className, onClick }: Category) => {
+export const CreateCategory = ({ buttonType, className, onClick }: Category) => {
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [state, setState] = useLocalStorage("currentStoreId", "")

@@ -93,6 +93,7 @@ export const CreateService = ({
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const { storeId } = useParams()
+  const router = useRouter();
 
 
   const { mutate: createService } = useMutation({
@@ -125,7 +126,7 @@ export const CreateService = ({
       onSuccess: (data) => {
         form.reset();
         toast.success("Category created");
-        // router.refresh()
+        router.refresh()
         console.log(data);
         setisLoading(false);
       },

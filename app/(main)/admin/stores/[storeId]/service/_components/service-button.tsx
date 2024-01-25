@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { CreateCategoryCard } from "../../../components/create-category-card";
 import { CreateService } from "./create-service";
 import { CategoriesNamesAndIdProps } from "@/lib/types";
+import { CreateCategory } from "./create-category";
 
 export const ServiceButton = ( { categories }: CategoriesNamesAndIdProps) => {
   console.log(categories)
@@ -21,7 +21,7 @@ export const ServiceButton = ( { categories }: CategoriesNamesAndIdProps) => {
         <Button className="w-[14rem]">Add New</Button>
       </PopoverTrigger>
       <PopoverContent className="flex flex-col gap-y-2">
-        <CreateCategoryCard
+        <CreateCategory
           buttonType="New Category"
           className={cn(
             active === "category"
