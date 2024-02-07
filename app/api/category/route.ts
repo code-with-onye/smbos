@@ -7,8 +7,10 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const user = await currentUser();
-    
-    const { categoryName, categoryImage, categoryDisplay, currentStoreId } = body;
+
+
+    const { categoryName, categoryImage, categoryDisplay, currentStoreId } =
+      body;
 
     if (!user) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -53,6 +55,8 @@ export async function POST(req: Request) {
     return new NextResponse("Internal error", { status: 500 });
   }
 }
+
+
 
 export async function GET(req: Request) {
   try {

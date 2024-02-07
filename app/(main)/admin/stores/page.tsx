@@ -8,6 +8,7 @@ export default async function StoresPage(){
     const user = await currentUser()
 
     const stores = await getStoresByUserId( user?.id as string);
+    
     return(
         <div className="flex flex-col gap-y-4">
             

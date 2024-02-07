@@ -1,4 +1,5 @@
 import prismadb from "@/lib/prismadb";
+import axios from "../axios";
 
 export const getCategories = async () => {
    try {
@@ -29,20 +30,23 @@ export const getCategoriesByStoreId = async (id: string) => {
    }
 }
 
-export const getCategoryByUserId = async (id: string) => {
+
+export const getCategoryById = async (id: string)=> {
 
    try {
-      const categories = await prismadb.category.findMany({
+      const category = await prismadb.category.findUnique({
          where: {
-            userId: id
+            id
          }
       });
-      return categories;
+      return category;
    } catch (error) {
       console.log("[Category_Get]", error);
       return null
    }
 }
+
+
 
 // get  4 most recent categories By userId by recent date and time created
 

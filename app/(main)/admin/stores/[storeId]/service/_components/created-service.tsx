@@ -1,75 +1,97 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { CategoriesByStoreIdProps } from "@/lib/types";
-import { CaretDownIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
 
+import { SortableCard } from "./sortable-card";
+
+import { updateService } from "@/lib/server-actions/update-service";
+import { CategoriesByStoreIdProps } from "@/lib/types";
 export const CreatedService = ({ categories }: CategoriesByStoreIdProps) => {
-  console.log(categories);
-  const [active, setActive] = useState("");
-  return (
-    <div>
-      {/* created service header */}
+  const [currentCatgories, setcurrentCatgories] = useState(categories || []);
+  const router = useRouter();
 
-      {/* created service body */}
-      <div className="w-full flex flex-col gap-y-4">
-        {categories?.map((category) => (
-          <Collapsible
-            open={active === category.id ? true : false}
-            onOpenChange={() => setActive(category.id)}
-            className="w-full space-y-2 border shadow p-3 rounded-lg bg-white"
-            key={category.id}
-          >
-            <CollapsibleTrigger asChild>
-              <div className="flex items-center justify-between space-x-4 px-4 cursor-pointer">
-                <h4 className="text-lg font-semibold">{category.name}</h4>
-                <Button variant="ghost" size="sm">
-                  <CaretDownIcon className="h-4 w-4" />
-                  <span className="sr-only">Toggle</span>
-                </Button>
-              </div>
-            </CollapsibleTrigger>
-            {category.services.length === 0 ? (
-              <p className="text-sm font-semibold text-gray-500 text-center">
-                No service created yet
-              </p>
-            ) : (
-              <div className="rounded-md border px-4 py-3 font-mono text-sm shadow-sm ml-12 flex justify-between items-center cursor-pointer hover:bg-slate-100/10">
-                <div className="flex flex-col gap-y-1.5">
-                  <h5 className="text-sm font-semibold">
-                    {category.services[0].name}
-                  </h5>
-                  <p>{category.services[0].duration}</p>
-                </div>
-                <h4 className="font-semibold">
-                  NGN {category.services[0].price}
-                </h4>
-              </div>
-            )}
-            <CollapsibleContent className="space-y-2 cursor-pointer">
-              {/* display service start from 2 go skip the firs one */}
-              {category.services.slice(1).map((service) => (
-                <div
-                  className="rounded-md border px-4 py-3 font-mono text-sm shadow-sm ml-12 flex justify-between items-center cursor-pointer hover:bg-slate-100/10"
-                  key={service.id}
-                >
-                  <div className="flex flex-col gap-y-2">
-                    <h5 className="text-sm font-semibold">{service.name}</h5>
-                    <p>{service.duration}</p>
-                  </div>
-                  <h4 className="font-semibold">NGN {service.price}</h4>
-                </div>
+  const { mutate: updateCategories } = useMutation({
+    mutationFn: updateService,
+    mutationKey: ["services"],
+  });
+
+  function reorder<T>(list: T[], startIndex: number, endIndex: number) {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+  }
+
+  const onDragEnd = (event: any) => {
+    const { destination, source, type } = event;
+
+    if (!destination) return;
+
+    // if droped in thesame position
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    )
+      return;
+
+    //if user move a category
+    if (type === "category") {
+      const newCategories = reorder(
+        currentCatgories,
+        source.index,
+        destination.index
+      ).map((category, index) => {
+        return {
+          ...category,
+          displayOrder: index,
+        };
+      });
+      setcurrentCatgories(newCategories);
+
+      updateCategories(
+        {
+          categories: newCategories,
+        },
+        {
+          onSuccess: () => {
+            router.refresh();
+            toast.success("Categories reordered");
+          },
+          onError: (error: any) => {
+            console.log(error);
+          },
+        }
+      );
+
+      // TODO Server actions
+    }
+  };
+
+  return (
+    <div className="h-[90vh] overflow-y-auto flex flex-col py-4">
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable direction="vertical" type="category" droppableId="droppable">
+          {(provider) => (
+            <div
+              {...provider.droppableProps}
+              ref={provider.innerRef}
+              className="w-full flex flex-col gap-y-4"
+            >
+              {currentCatgories?.map((category, index) => (
+                <SortableCard
+                  key={category.id}
+                  categories={category}
+                  index={index}
+                />
               ))}
-            </CollapsibleContent>
-          </Collapsible>
-        ))}
-      </div>
+              {provider.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

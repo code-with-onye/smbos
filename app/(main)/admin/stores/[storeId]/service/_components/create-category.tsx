@@ -3,8 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "@/lib/axios";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter, useParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +32,8 @@ import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { FileUpload } from "@/components/shared/file-upload";
 import Image from "next/image";
-import useLocalStorage from "@/lib/hooks/use-localstorage";
+import  { useSheet} from "@/lib/store/sheet-popup";
+import { getCategoryById } from "@/lib/server-actions/category";
 
 const formSchema = z.object({
   categoryName: z.string().min(1, {
@@ -45,134 +46,118 @@ const formSchema = z.object({
 });
 
 interface Category {
-  buttonType: React.ReactNode;
+  buttonType?: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  edit?: boolean;
 }
 
-export const CreateCategory = ({ buttonType, className, onClick }: Category) => {
+export const CreateCategory = ({
+  buttonType,
+  className,
+  onClick,
+  edit,
+}: Category) => {
   const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [state, setState] = useLocalStorage("currentStoreId", "")
-
+  const {isOpen, onOpen, onClose, id} = useSheet();
+  const {storeId} = useParams()
   const router = useRouter();
-  const { mutate: createCategory } = useMutation({
+
+  
+const { mutate: createCategory } = useMutation({
     mutationFn: (data: z.infer<typeof formSchema>) => {
       return axios.post("/category", data);
     },
     mutationKey: ["categories"],
   });
 
+  const { mutate: updateCategory } = useMutation({
+    mutationFn: (data: z.infer<typeof formSchema>) => {
+      return axios.post("/category", data);
+    },
+    mutationKey: ["categories"],
+  });
+
+  const { mutate: deleteCategory } = useMutation({
+    mutationFn: (data: z.infer<typeof formSchema>) => {
+      return axios.post("/category", data);
+    },
+    mutationKey: ["categories"],
+  });
+
+
+  const { data, isLoading: categoryLoading  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async() => await getCategoryById({
+      id,
+      storeId
+    } as any),
+  })
+
+
+  console.log(data)
+  
+
+
+  
+  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       categoryName: "",
       categoryImage: "",
-      categoryDescription:"",
+      categoryDescription: "",
       categoryDisplay: false,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setisLoading(true);
-    createCategory({ ...values, currentStoreId: state}, {
-      onSuccess: (data) => {
-        form.reset();
-        toast.success("Category created");
-        router.refresh();
-        setisLoading(false);
-      },
-      onError: (error: any) => {
-        console.log(error);
-        setisLoading(false);
-        toast.error(error.response.data);
-      },
-    });
+
+    id
+      ? updateCategory(values)
+      : createCategory(
+          { ...values, currentStoreId: storeId as string },
+          {
+            onSuccess: (data) => {
+              form.reset();
+              toast.success("Category created");
+              router.refresh();
+              setisLoading(false);
+            },
+            onError: (error: any) => {
+              console.log(error);
+              setisLoading(false);
+              toast.error(error.response.data);
+            },
+          }
+        );
   }
 
   return (
-    <Sheet>
-      <SheetTrigger className={className} onClick={onClick}>{buttonType}</SheetTrigger>
+    <Sheet open={isOpen} onOpenChange={onClose} >
       <SheetContent side="left" className="w-[600px]">
         <SheetHeader>
-          <SheetTitle>Add a new category </SheetTitle>
-          <SheetDescription>
-            Add a new category. Example is SkinCare
-          </SheetDescription>
+          {id ? (
+            <SheetTitle>Edit Category</SheetTitle>
+          ): (
+            <SheetTitle>Create Category</SheetTitle>
+          )}
+          {
+            id ? (
+              <SheetDescription>
+                Edit the category
+              </SheetDescription>
+            ) : (
+              <SheetDescription>
+                Create a new category
+              </SheetDescription>
+            )
+          }
         </SheetHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 mt-12"
-          >
-            <FormField
-              control={form.control}
-              name="categoryName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Name" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Name of the category. Example is SkinCare
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            
-
-            <FormField
-              control={form.control}
-              name="categoryDescription"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Description" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Description of the category. Example is SkinCare
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-
-
-            <FormField
-              control={form.control}
-              name="categoryDisplay"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border border-primary p-4">
-                  <div className="space-y-0.5">
-                    <FormLabel className="text-base">
-                      Display category Public
-                    </FormLabel>
-                    <FormDescription>
-                      This category will be displayed on your store
-                    </FormDescription>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-between items-center">
-            <Button>Submit</Button>
-            <SheetClose>
-              <div>Close</div>
-            </SheetClose>
-            </div>
-          </form>
-        </Form>
+       
       </SheetContent>
     </Sheet>
   );

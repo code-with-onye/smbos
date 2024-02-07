@@ -37,7 +37,7 @@ const ProfileCard = ({ store, currentStoreId }: SidebarProps) => {
 
 export const Sidebar = ({ store, currentStoreId }: SidebarProps) => {
   return (
-    <div className="h-[96vh] w-80 rounded-lg mx-3 mt-4 shadow-lg border dark:border-slate-800 bg-white dark:bg-[#272E38] p-3 lg:block hidden">
+    <div className="h-[96vh] w-[30rem] rounded-lg mx-3 mt-4 shadow-lg border dark:border-slate-800 bg-white dark:bg-[#272E38] p-3 lg:block hidden">
       {/* profile card */}
       <div className="mb-44">
         <ProfileCard store={store} currentStoreId={currentStoreId} />
