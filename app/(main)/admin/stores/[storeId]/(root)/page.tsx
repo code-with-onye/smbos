@@ -1,4 +1,5 @@
 import { currentUser } from "@/lib/auth"
+import { OpenHoursCard } from "../../components/open-hours-card"
 
 export default async function StorePage(){
 
@@ -7,6 +8,7 @@ export default async function StorePage(){
     return(
         <div>
            store
+           <OpenHoursCard/>
         </div>
     )
 }
