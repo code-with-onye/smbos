@@ -21,7 +21,7 @@ export async function GET(req: Request) {
     const members = await prismadb.user.findMany();
     return NextResponse.json({
       members,
-    });
+    }); 
   } catch (error) {
     console.log("[Members_Get]", error);
     return new NextResponse("Internal error", { status: 500 });

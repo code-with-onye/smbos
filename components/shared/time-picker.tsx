@@ -21,7 +21,7 @@ function TimePicker({
   hour,
   minute,
 }: TimePickerProps) {
-  const times = incrementTime("00:00", 5, 24);
+  const times = incrementTime("00:00", 5, 288);
 
   return (
     <div className="flex items-center gap-x-3">

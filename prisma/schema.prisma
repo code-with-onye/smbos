@@ -31,7 +31,6 @@ model User {
   organizations Orgnization[]
   Account       Account[]
   store         Store[]
-  
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -69,12 +68,14 @@ model Orgnization {
 }
 
 model Store {
-  id             String     @id @default(cuid())
+  id             String         @id @default(cuid())
   name           String
   whatsappNumber String
   storeImage     String?
   categories     Category[]
   services       Service[]
+  openingHours   OpeningHours[]
+  appointments   Appointment[]
   userId         String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -111,11 +112,43 @@ model Service {
   availability Boolean
   featured     Boolean
 
+  appointments Appointment[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   category Category @relation(fields: [categoryId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   store    Store    @relation(fields: [storeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+}
+
+model OpeningHours {
+  id      String  @id @default(cuid())
+  day     String
+  from    String
+  to      String
+  storeId String
+  isOpen  Boolean
+
+  store Store @relation(fields: [storeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id             String   @id @default(cuid())
+  date           DateTime
+  time           String
+  status         String
+  customerName   String
+  customerPhone  String
+  notes          String
+  numberOfPeople String
+  storeId        String
+  serviceId      String
+
+  store   Store   @relation(fields: [storeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Profile {

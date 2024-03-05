@@ -22,7 +22,7 @@ export default async function AdminLayout({
   const store = await getStoresByUserId(user?.id as string);
   const stores = await getStores()
 
-
+ 
   if (org?.length === 0) {
     return (
       <main className="w-full flex flex-col  h-screen items-center justify-center">

@@ -1,14 +1,13 @@
-import { currentUser } from "@/lib/auth"
-import { OpenHoursCard } from "../../components/open-hours-card"
+import Calendar from "@/components/shared/calender";
+import { currentUser } from "@/lib/auth";
 
-export default async function StorePage(){
+export default async function StorePage() {
+  const user = await currentUser();
 
-    const user = await currentUser()
-
-    return(
-        <div>
-           store
-           <OpenHoursCard/>
-        </div>
-    )
+  return (
+    <div>
+      store
+      <Calendar />
+    </div>
+  );
 }

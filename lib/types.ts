@@ -59,3 +59,15 @@ export type serviceProps = {
     updatedAt: Date;
   } | null;
 };
+
+export type AppointmentProps = {
+      id: string;
+      date: Date;
+      time: string;
+      status: string;
+      customerName: string;
+      customerPhone: string;
+      notes: string;
+      numberOfPeople: string;
+      serviceId: string;
+    }
